@@ -24,6 +24,8 @@
 
 #include "task_logger.hpp"
 
+#include <chrono>
+
 #include "mbed_trace.h"
 #if MBED_CONF_MBED_TRACE_ENABLE
 #define TRACE_GROUP "TaskLogger"
@@ -34,25 +36,42 @@ namespace advembsof {
 const char* TaskLogger::kTaskDescriptors[TaskLogger::kNbrOfTasks] = {
     const_cast<char*>("Gear"),
     const_cast<char*>("Speed"),
-    const_cast<char*>("Sensor"),
+    const_cast<char*>("Temperature"),
     const_cast<char*>("Reset"),
-    const_cast<char*>("Display")};
+    const_cast<char*>("Display(1)"),
+    const_cast<char*>("Display(2)")};
 
 void TaskLogger::enable(bool enable) { _isEnabled = enable; }
+
+#if defined(MBED_TEST_MODE)
+std::chrono::microseconds TaskLogger::getPeriod(uint8_t taskIndex) const {
+    if (taskIndex >= kNbrOfTasks) {
+        return std::chrono::microseconds::zero();
+    }
+    return _taskPeriod[taskIndex];
+}
+
+std::chrono::microseconds TaskLogger::getComputationTime(uint8_t taskIndex) const {
+    if (taskIndex >= kNbrOfTasks) {
+        return std::chrono::microseconds::zero();
+    }
+    return _taskComputationTime[taskIndex];
+}
+#endif  // defined(MBED_TEST_MODE)
 
 void TaskLogger::logPeriodAndExecutionTime(
     Timer& timer, int taskIndex, const std::chrono::microseconds& taskStartTime) {
     bool firstCall = _taskStartTime[taskIndex] == std::chrono::microseconds::zero();
-    std::chrono::microseconds periodTime = taskStartTime - _taskStartTime[taskIndex];
-    _taskStartTime[taskIndex]            = taskStartTime;
+    _taskPeriod[taskIndex]    = taskStartTime - _taskStartTime[taskIndex];
+    _taskStartTime[taskIndex] = taskStartTime;
     if (!firstCall && _isEnabled) {
-        std::chrono::microseconds taskEndTime   = timer.elapsed_time();
-        std::chrono::microseconds executionTime = taskEndTime - _taskStartTime[taskIndex];
+        std::chrono::microseconds taskEndTime = timer.elapsed_time();
+        _taskComputationTime[taskIndex]       = taskEndTime - _taskStartTime[taskIndex];
         tr_debug("%s task: period %" PRIu64 " usecs execution time %" PRIu64
                  " usecs start time %" PRIu64 " usecs",
                  kTaskDescriptors[taskIndex],
-                 periodTime.count(),
-                 executionTime.count(),
+                 _taskPeriod[taskIndex].count(),
+                 _taskComputationTime[taskIndex].count(),
                  _taskStartTime[taskIndex].count());
     }
 }

@@ -37,20 +37,30 @@ class TaskLogger {
                                    int taskIndex,
                                    const std::chrono::microseconds& taskStartTime);
 
-    static constexpr int kGearTaskIndex    = 0;
-    static constexpr int kSpeedTaskIndex   = 1;
-    static constexpr int kSensorTaskIndex  = 2;
-    static constexpr int kResetTaskIndex   = 3;
-    static constexpr int kDisplayTaskIndex = 4;
+    static constexpr int kNbrOfTasks           = 6;
+    static constexpr int kGearTaskIndex        = 0;
+    static constexpr int kSpeedTaskIndex       = 1;
+    static constexpr int kTemperatureTaskIndex = 2;
+    static constexpr int kResetTaskIndex       = 3;
+    static constexpr int kDisplayTask1Index    = 4;
+    static constexpr int kDisplayTask2Index    = 5;
+
+#if defined(MBED_TEST_MODE)
+    std::chrono::microseconds getPeriod(uint8_t taskIndex) const;
+    std::chrono::microseconds getComputationTime(uint8_t taskIndex) const;
+#endif
 
    private:
     // constants
-    static constexpr int kNbrOfTasks = 5;
     static const char* kTaskDescriptors[TaskLogger::kNbrOfTasks];
 
     // data members
     bool _isEnabled                                       = true;
     std::chrono::microseconds _taskStartTime[kNbrOfTasks] = {
+        std::chrono::microseconds::zero()};
+    std::chrono::microseconds _taskPeriod[kNbrOfTasks] = {
+        std::chrono::microseconds::zero()};
+    std::chrono::microseconds _taskComputationTime[kNbrOfTasks] = {
         std::chrono::microseconds::zero()};
 };
 
