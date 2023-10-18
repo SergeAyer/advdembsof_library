@@ -54,6 +54,7 @@ class HDC1000 : public I2C {
     // data members
     int _address;
     DigitalIn _dataReadyPin;
+    bool _isPresent = false;
 };
 
 }  // namespace advembsof

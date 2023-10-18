@@ -56,6 +56,7 @@ class TaskLogger {
 
     // data members
     bool _isEnabled                                       = true;
+    uint32_t _nbrOfCalls[kNbrOfTasks]                     = {0};
     std::chrono::microseconds _taskStartTime[kNbrOfTasks] = {
         std::chrono::microseconds::zero()};
     std::chrono::microseconds _taskPeriod[kNbrOfTasks] = {

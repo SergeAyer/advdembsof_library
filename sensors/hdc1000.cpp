@@ -38,15 +38,26 @@ HDC1000::HDC1000(PinName sda, PinName scl, PinName dataRdy)
 bool HDC1000::probe(void) {
     char rx_data = 0;
     int rc       = read(_address | 0x1, &rx_data, static_cast<int>(sizeof(rx_data)));
+    _isPresent   = rc == 0;
     return (rc == 0);
 }
 
 double HDC1000::getTemperature(void) {
+    if (!_isPresent) {
+        if (!probe()) {
+            return 0.0;
+        }
+    }
     double temperature = getRawTemperature();
     return (temperature / 65536.0) * 165.0 - 40.0;
 }
 
 double HDC1000::getHumidity(void) {
+    if (!_isPresent) {
+        if (!probe()) {
+            return 0.0;
+        }
+    }
     double humidity = getRawHumidity();
     return (humidity / 65536.0) * 100.0;
 }

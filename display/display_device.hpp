@@ -44,13 +44,6 @@ class DisplayDevice {
 
    private:
     // data members
-    // definition of task period time
-    static constexpr std::chrono::milliseconds kTaskPeriod = 1600ms;
-    // definition of task execution time
-    static constexpr std::chrono::microseconds kTaskRunTime    = 300000us;
-    static constexpr std::chrono::microseconds kSubTaskRunTime = 100000us;
-    // nbr of subtasks for static cyclic scheduling
-    static constexpr uint8_t kNbrOfSubTasks = 3;
 
     // BikeDisplay instance used for display information on the device screen
     advembsof::BikeDisplay _bikeDisplay;

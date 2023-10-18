@@ -62,17 +62,25 @@ std::chrono::microseconds TaskLogger::getComputationTime(uint8_t taskIndex) cons
 void TaskLogger::logPeriodAndExecutionTime(
     Timer& timer, int taskIndex, const std::chrono::microseconds& taskStartTime) {
     bool firstCall = _taskStartTime[taskIndex] == std::chrono::microseconds::zero();
-    _taskPeriod[taskIndex]    = taskStartTime - _taskStartTime[taskIndex];
-    _taskStartTime[taskIndex] = taskStartTime;
+    std::chrono::microseconds taskPeriod = taskStartTime - _taskStartTime[taskIndex];
+    _taskStartTime[taskIndex]            = taskStartTime;
     if (!firstCall && _isEnabled) {
+        uint32_t nbrOfCalls = _nbrOfCalls[taskIndex];
+        _taskPeriod[taskIndex] =
+            ((_taskPeriod[taskIndex] * nbrOfCalls) + taskPeriod) / (nbrOfCalls + 1);
         std::chrono::microseconds taskEndTime = timer.elapsed_time();
-        _taskComputationTime[taskIndex]       = taskEndTime - _taskStartTime[taskIndex];
+        std::chrono::microseconds taskComputationTime =
+            taskEndTime - _taskStartTime[taskIndex];
+        _taskComputationTime[taskIndex] =
+            ((_taskComputationTime[taskIndex] * nbrOfCalls) + taskComputationTime) /
+            (nbrOfCalls + 1);
         tr_debug("%s task: period %" PRIu64 " usecs execution time %" PRIu64
                  " usecs start time %" PRIu64 " usecs",
                  kTaskDescriptors[taskIndex],
                  _taskPeriod[taskIndex].count(),
                  _taskComputationTime[taskIndex].count(),
                  _taskStartTime[taskIndex].count());
+        _nbrOfCalls[taskIndex]++;
     }
 }
 
