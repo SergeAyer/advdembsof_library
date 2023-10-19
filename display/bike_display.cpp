@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /****************************************************************************
- * @file bike_display.hpp
+ * @file bike_display.cpp
  * @author Serge Ayer <serge.ayer@hefr.ch>
  *
  * @brief Bike Display header file

@@ -13,10 +13,10 @@
 // limitations under the License.
 
 /****************************************************************************
- * @file memory_logger.hpp
+ * @file cpu_logger.hpp
  * @author Serge Ayer <serge.ayer@hefr.ch>
  *
- * @brief Memory logger header file
+ * @brief CPU logger (for cpu utilisation) header file
  *
  * @date 2023-08-20
  * @version 1.0.0
@@ -24,30 +24,22 @@
 
 #pragma once
 
+#include <chrono>
+
 #include "mbed.h"
 
 namespace advembsof {
 
-#if defined(MBED_ALL_STATS_ENABLED)
+class CPULogger {
+  public:
+    CPULogger(Timer& timer);
+    
+    void printStats();
 
-class MemoryLogger {
-   public:
-    // methods used by owners
-    void getAndPrintStatistics();
-    void printDiffs();
-    void printRuntimeMemoryMap();
-
-    void getAndPrintHeapStatistics();
-    void getAndPrintStackStatistics();
-
-   private:
-    // data members
-    static constexpr uint8_t kMaxThreadInfo       = 10;
-    mbed_stats_heap_t _heapInfo                   = {0};
-    mbed_stats_stack_t _stackInfo[kMaxThreadInfo] = {0};
-    mbed_stats_stack_t _globalStackInfo           = {0};
+  private:
+    mbed_stats_cpu_t _stats = {0};
+    std::chrono::microseconds _lastTime = std::chrono::microseconds::zero();
+    Timer &_timer;  
 };
 
-#endif  // MBED_ALL_STATS_ENABLED
-
-}  // namespace advembsof
+} // namespace advembsof
