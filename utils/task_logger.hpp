@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /****************************************************************************
- * @file bike_system.hpp
+ * @file task_logger.hpp
  * @author Serge Ayer <serge.ayer@hefr.ch>
  *
  * @brief Task logger (for times) header file
@@ -32,6 +32,8 @@ namespace advembsof {
 
 class TaskLogger {
    public:
+    TaskLogger() = default;
+    
     void enable(bool enable);
     void logPeriodAndExecutionTime(Timer& timer,  // NOLINT(runtime/references)
                                    int taskIndex,

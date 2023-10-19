@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /****************************************************************************
- * @file bike_system.hpp
+ * @file memory_logger.cpp
  * @author Serge Ayer <serge.ayer@hefr.ch>
  *
  * @brief Memory logger implementation
