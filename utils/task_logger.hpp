@@ -33,7 +33,7 @@ namespace advembsof {
 class TaskLogger {
    public:
     TaskLogger() = default;
-    
+
     void enable(bool enable);
     void logPeriodAndExecutionTime(Timer& timer,  // NOLINT(runtime/references)
                                    int taskIndex,

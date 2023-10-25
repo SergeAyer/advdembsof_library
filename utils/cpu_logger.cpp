@@ -23,6 +23,7 @@
  ***************************************************************************/
 
 #include "cpu_logger.hpp"
+
 #include <chrono>
 
 #include "mbed_trace.h"
@@ -32,29 +33,27 @@
 
 namespace advembsof {
 
-CPULogger::CPULogger(Timer &timer) : _timer(timer) {
-
-}
+CPULogger::CPULogger(Timer& timer) : _timer(timer) {}
 
 void CPULogger::printStats() {
     mbed_stats_cpu_t stats;
     mbed_stats_cpu_get(&stats);
-    
-    std::chrono::microseconds time = _timer.elapsed_time();            
-    if (_lastTime != std::chrono::microseconds::zero()) {
-      std::chrono::microseconds elapsedTime = time - _lastTime;
 
-      // Calculate the percentage of CPU usage
-      us_timestamp_t up_usec_in_time_range = stats.uptime - _stats.uptime;
-      us_timestamp_t idle_usec_in_time_range = stats.idle_time - _stats.idle_time;
-      uint32_t usage = 100 - ((idle_usec_in_time_range * 100) / elapsedTime.count());
-      tr_info("Up time since start: %" PRIu64 " msecs", stats.uptime / 1000);
-      tr_info("Up time in period: %" PRIu64 " msecs", up_usec_in_time_range / 1000);
-      tr_info("Idle time in period: %" PRIu64 " msecs", idle_usec_in_time_range / 1000);
-      tr_info("Usage in period: %" PRIu32 " %%", usage);
+    std::chrono::microseconds time = _timer.elapsed_time();
+    if (_lastTime != std::chrono::microseconds::zero()) {
+        std::chrono::microseconds elapsedTime = time - _lastTime;
+
+        // Calculate the percentage of CPU usage
+        us_timestamp_t up_usec_in_time_range   = stats.uptime - _stats.uptime;
+        us_timestamp_t idle_usec_in_time_range = stats.idle_time - _stats.idle_time;
+        uint32_t usage = 100 - ((idle_usec_in_time_range * 100) / elapsedTime.count());
+        tr_info("Up time since start: %" PRIu64 " msecs", stats.uptime / 1000);
+        tr_info("Up time in period: %" PRIu64 " msecs", up_usec_in_time_range / 1000);
+        tr_info("Idle time in period: %" PRIu64 " msecs", idle_usec_in_time_range / 1000);
+        tr_info("Usage in period: %" PRIu32 " %%", usage);
     }
 
-    _stats = stats;
+    _stats    = stats;
     _lastTime = time;
 }
 

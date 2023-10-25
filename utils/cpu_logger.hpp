@@ -31,15 +31,15 @@
 namespace advembsof {
 
 class CPULogger {
-  public:
-    CPULogger(Timer& timer);
-    
+   public:
+    explicit CPULogger(Timer& timer);  // NOLINT (runtime/references)
+
     void printStats();
 
-  private:
-    mbed_stats_cpu_t _stats = {0};
+   private:
+    mbed_stats_cpu_t _stats             = {0};
     std::chrono::microseconds _lastTime = std::chrono::microseconds::zero();
-    Timer &_timer;  
+    Timer& _timer;
 };
 
-} // namespace advembsof
+}  // namespace advembsof
