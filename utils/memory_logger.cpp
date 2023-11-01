@@ -154,9 +154,29 @@ void MemoryLogger::getAndPrintStackStatistics() {
     }
 }
 
+void MemoryLogger::getAndPrintThreadStatistics() {
+    static const char* state[] = {"Ready", "Running", "Waiting"};
+    mbed_stats_thread_get_each(_threadInfo, kMaxThreadInfo);
+    tr_debug("Thread Info:");
+    for (uint32_t i = 0; i < kMaxThreadInfo; i++) {
+        if (_threadInfo[i].id != 0) {
+            tr_debug("\tThread: %" PRIu32 "", i);
+            tr_debug("\t\tThread Id: 0x%08" PRIx32 " with name %s, state %s, priority %d",
+                     _threadInfo[i].id,
+                     _threadInfo[i].name,
+                     state[_threadInfo[i].state - 1],
+                     _threadInfo[i].priority);
+            tr_debug("\t\tStack size %" PRIu32 " (free bytes remaining %" PRIu32 ")",
+                     _threadInfo[i].stack_size,
+                     _threadInfo[i].stack_space);
+        }
+    }
+}
+
 void MemoryLogger::getAndPrintStatistics() {
     getAndPrintHeapStatistics();
     getAndPrintStackStatistics();
+    getAndPrintThreadStatistics();
 }
 
 void MemoryLogger::printRuntimeMemoryMap() {
