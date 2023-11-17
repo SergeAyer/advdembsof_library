@@ -161,7 +161,7 @@ void MemoryLogger::getAndPrintThreadStatistics() {
     for (uint32_t i = 0; i < kMaxThreadInfo; i++) {
         if (_threadInfo[i].id != 0) {
             tr_debug("\tThread: %" PRIu32 "", i);
-            tr_debug("\t\tThread Id: 0x%08" PRIx32 " with name %s, state %s, priority %d",
+            tr_debug("\t\tThread Id: 0x%08" PRIx32 " with name %s, state %s, priority %" PRIu32 "",
                      _threadInfo[i].id,
                      _threadInfo[i].name,
                      state[_threadInfo[i].state - 1],
